@@ -31,9 +31,9 @@ class Plugin extends PluginBase
         ];
     }
 
-    public function register()
+    public function boot()
     {
-//        $gateway = $this->app->get(PaymentGateway::class);
-//        $gateway->registerProvider(new Tinkoff());
+        $gateway = $this->app->get(PaymentGateway::class);
+        $gateway->registerProvider(new Tinkoff());
     }
 }
