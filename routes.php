@@ -12,8 +12,10 @@ Route::post('tinkoff/notify', function () {
     $orderId = (int)$data['OrderId'];
     $order = Order::find($orderId);
 
-    $tinkoff = new Tinkoff();
+    if ($order && !$order->getIsPaidAttribute()) {
+        $tinkoff = new Tinkoff();
 
-    $result = new PaymentResult($tinkoff, $order);
-    $result->success($data, $response);
+        $result = new PaymentResult($tinkoff, $order);
+        $result->success($data, $response);
+    }
 });
