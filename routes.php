@@ -5,6 +5,7 @@ use OFFLINE\Mall\Classes\Payments\PaymentResult;
 use OFFLINE\Mall\Models\Order;
 
 Route::post('tinkoff/notify', function () {
+    $status = 'NOTOK';
     $response = null;
     $request = Request::getContent();
     $data = json_decode($request, true);
@@ -16,6 +17,14 @@ Route::post('tinkoff/notify', function () {
         $tinkoff = new Tinkoff();
 
         $result = new PaymentResult($tinkoff, $order);
-        $result->success($data, $response);
+        if ($data['Success']) {
+            $result->success($data, $response);
+        }
+        else {
+            $result->fail($data, $response);
+        }
+
+        $status = 'OK';
     }
+    return $status;
 });
