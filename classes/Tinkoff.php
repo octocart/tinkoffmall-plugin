@@ -2,6 +2,7 @@
 
 use Log;
 use Config;
+use OFFLINE\Mall\Models\Order;
 use OFFLINE\Mall\Models\PaymentGatewaySettings;
 use OFFLINE\Mall\Classes\Payments\PaymentResult;
 use OFFLINE\Mall\Classes\Payments\PaymentProvider;
@@ -15,7 +16,7 @@ class Tinkoff extends PaymentProvider
     /**
      * The order that is being paid.
      *
-     * @var \OFFLINE\Mall\Models\Order
+     * @var Order
      */
     public $order;
     /**
@@ -106,7 +107,11 @@ class Tinkoff extends PaymentProvider
         $data = json_decode($data, true);
 
         if (!isset($data['PaymentURL'])) {
+            Log::info('[tinkoffmall]: ' . var_export($data, true));
             return $result->fail($data, $response);
+        }
+        else {
+//            Log::info('[tinkoffmall]: ' . var_export($data, true));
         }
 
         return $result->redirect($data['PaymentURL']);
@@ -124,7 +129,7 @@ class Tinkoff extends PaymentProvider
         $description = $this->getDescription();
 
         $arrFields = [
-            'OrderId' => $this->order->id,
+            'OrderId' => $this->order->order_number,
             'Amount' => (int)$this->order->getOriginal('total_post_taxes'),
             'Description' => $description,
             'DATA' => ['Email' => $this->order->customer->user->email, 'Connection_type' => 'mall',],

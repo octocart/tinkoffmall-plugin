@@ -26,5 +26,6 @@ Route::post('tinkoff/notify', function () {
 
         $status = 'OK';
     }
+
     return $status;
 });
